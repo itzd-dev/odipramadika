@@ -281,6 +281,29 @@
         background-color: #27272a; /* zinc-800 */
         border-radius: 9999px;
       }
+      
+      /* FIXED: Shine Effect */
+      .text-shine {
+        position: relative;
+        background: linear-gradient(90deg, var(--muted-text-color), #ffffff, var(--muted-text-color));
+        background-size: 200% 100%;
+        -webkit-background-clip: text;
+        -moz-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        -moz-text-fill-color: transparent;
+        animation: shine 4s linear infinite;
+      }
+
+      @keyframes shine {
+        0% {
+            background-position: 200% 0;
+        }
+        100% {
+            background-position: -200% 0;
+        }
+      }
+
     </style>
   </head>
   <body class="antialiased">
@@ -327,7 +350,7 @@
                 ></span>
               </span>
               <span class="text-white">Available For:</span>
-              <span class="font-semibold text-white"
+              <span class="font-semibold text-shine"
                 >FREELANCE / FULL-TIME</span
               >
             </div>
@@ -1057,7 +1080,6 @@
         const fabContainer = document.getElementById("floating-bar");
         const fabToggle = document.getElementById("fab-toggle");
         const fabToggleIcon = document.getElementById("fab-toggle-icon");
-
         // Collapse after 3 seconds
         setTimeout(() => {
           fabContainer.classList.add("collapsed");
