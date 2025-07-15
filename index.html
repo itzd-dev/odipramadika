@@ -1,548 +1,976 @@
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Odi Pramadika | Network & DevOps Engineer</title>
-    
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Google Fonts: Inter Tight -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;700&display=swap" rel="stylesheet">
-    
-    <!-- Bootstrap Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
-    <!-- Three.js for background animation -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- Google Fonts: Inter Tight -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Bootstrap Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    />
 
     <style>
-        /* Custom Color Scheme */
-        :root {
-            --bg-color: #212121;
-            --text-color: #e4e4e7; /* zinc-200 */
-            --accent-color: #FBBF24; /* Amber-400 */
-            --card-bg: rgba(39, 39, 42, 0.4); /* zinc-800 with more transparency */
-            --border-color: rgba(63, 63, 70, 0.2); /* zinc-700 with more transparency */
-            --muted-text-color: #a1a1aa; /* zinc-400 */
-        }
+      /* Custom Color Scheme */
+      :root {
+        --bg-color: #212121;
+        --text-color: #e4e4e7; /* zinc-200 */
+        --accent-color: #fbbf24; /* Amber-400 */
+        --card-bg: rgba(39, 39, 42, 0.4); /* zinc-800 with more transparency */
+        --border-color: rgba(
+          63,
+          63,
+          70,
+          0.2
+        ); /* zinc-700 with more transparency */
+        --muted-text-color: #a1a1aa; /* zinc-400 */
+        --grid-color: rgba(251, 191, 36, 0.08); /* Amber-400 with low opacity */
+      }
 
-        body {
-            font-family: 'Inter Tight', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            overflow-x: hidden;
-        }
+      body {
+        font-family: "Inter Tight", sans-serif;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        overflow-x: hidden;
+      }
 
-        /* New Loader Styling */
-        #loader {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: var(--bg-color);
-            z-index: 1000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: opacity 0.75s ease-out;
-        }
-        
-        /* Loader from Uiverse.io by gagan-gv */
-        .spinner {
-            border: 0 solid transparent;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-        }
+      /* Animated Grid Background */
+      #background-grid {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        background-image: linear-gradient(
+            to right,
+            var(--grid-color) 1px,
+            transparent 1px
+          ),
+          linear-gradient(to bottom, var(--grid-color) 1px, transparent 1px);
+        background-size: 24px 24px;
+        animation: moveGrid 30s linear infinite;
+        mask-image: radial-gradient(
+          ellipse 80% 80% at 50% 50%,
+          black 40%,
+          transparent 100%
+        );
+        -webkit-mask-image: radial-gradient(
+          ellipse 80% 80% at 50% 50%,
+          black 40%,
+          transparent 100%
+        );
+        filter: blur(1px); /* Menambahkan efek blur */
+      }
 
-        .loader {
-            width: inherit;
-            height: inherit;
-            position: absolute;
+      @keyframes moveGrid {
+        from {
+          background-position: 0 0;
         }
+        to {
+          background-position: -48px -48px;
+        }
+      }
 
-        .loader::before,
-        .loader::after {
-            content: '';
-            border: 3px solid var(--accent-color); /* Adjusted color */
-            border-radius: 50%;
-            width: inherit;
-            height: inherit;
-            position: absolute;
-            opacity: 1;
-        }
+      /* New Loader Styling */
+      #loader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: var(--bg-color);
+        z-index: 1000;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: opacity 0.75s ease-out;
+      }
 
-        .l1::before,
-        .l1::after {
-            animation: clockwiseZ 2.5s infinite;
-        }
+      /* Loader from Uiverse.io by gagan-gv */
+      .spinner {
+        border: 0 solid transparent;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+      }
 
-        .l2::after,
-        .l2::before {
-            animation: anticlockwiseZ 2.5s infinite;
-        }
+      .loader {
+        width: inherit;
+        height: inherit;
+        position: absolute;
+      }
 
-        @keyframes clockwiseZ {
-            0%, 100% {
-                transform: rotateY(0);
-            }
-            50% {
-                transform: rotateY(180deg) skew(-10deg, -5deg);
-            }
-        }
+      .loader::before,
+      .loader::after {
+        content: "";
+        border: 3px solid var(--accent-color); /* Adjusted color */
+        border-radius: 50%;
+        width: inherit;
+        height: inherit;
+        position: absolute;
+        opacity: 1;
+      }
 
-        @keyframes anticlockwiseZ {
-            0%, 100% {
-                transform: rotateX(0);
-            }
-            50% {
-                transform: rotateX(-180deg) skew(10deg, 5deg);
-            }
-        }
+      .l1::before,
+      .l1::after {
+        animation: clockwiseZ 2.5s infinite;
+      }
 
+      .l2::after,
+      .l2::before {
+        animation: anticlockwiseZ 2.5s infinite;
+      }
 
-        .content-blurred {
-            filter: blur(8px);
-            transition: filter 1.2s ease-out;
+      @keyframes clockwiseZ {
+        0%,
+        100% {
+          transform: rotateY(0);
         }
+        50% {
+          transform: rotateY(180deg) skew(-10deg, -5deg);
+        }
+      }
 
-        #bg-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
+      @keyframes anticlockwiseZ {
+        0%,
+        100% {
+          transform: rotateX(0);
         }
+        50% {
+          transform: rotateX(-180deg) skew(10deg, 5deg);
+        }
+      }
 
-        .glass-card {
-            background: var(--card-bg);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border: 1px solid var(--border-color);
-        }
-        
-        .fade-in-up {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-        }
-        .fade-in-up.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
+      .content-blurred {
+        filter: blur(8px);
+        transition: filter 1.2s ease-out;
+      }
 
-        #search-container .search-icon {
-            color: var(--text-color);
-            transition: opacity 0.3s ease-in-out;
-            font-weight: bold; /* Ikon dipertebal */
-        }
-        #search-container:hover .search-icon {
-            opacity: 0;
-        }
-        #search-container .search-input {
-            width: 0;
-            padding-left: 0;
-            padding-right: 0;
-            opacity: 0;
-            transition: all 0.4s ease-in-out;
-            font-size: 0.875rem;
-            color: var(--text-color);
-        }
-        #search-container .search-input::placeholder {
-            color: var(--muted-text-color);
-            opacity: 0.8;
-        }
-        #search-container:hover .search-input {
-            width: 150px;
-            padding-left: 1rem;
-            padding-right: 1rem;
-            opacity: 1;
-        }
-        #search-container .search-border {
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            right: 50%;
-            height: 2px;
-            background-color: var(--accent-color);
-            transition: all 0.4s ease-in-out;
-        }
-        #search-container:hover .search-border {
-            left: 0;
-            right: 0;
-        }
+      .glass-card {
+        background: var(--card-bg);
+        backdrop-filter: blur(15px);
+        -webkit-backdrop-filter: blur(15px);
+        border: 1px solid var(--border-color);
+      }
 
-        .animate-entry {
-            opacity: 0;
-            transform: translateY(-20px);
-            transition: opacity 0.6s cubic-bezier(0.25, 1, 0.5, 1),
-            transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
-        }
-        .animate-entry.is-visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
+      .fade-in-up {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+      }
+      .fade-in-up.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
 
-        /* Floating Action Bar */
-        .fab-secondary {
-            transition: all 0.4s ease-out;
-            opacity: 1;
-            transform: scale(1);
-            height: 3.5rem; /* 56px */
-        }
-        #floating-bar.collapsed .fab-secondary {
-            opacity: 0;
-            transform: scale(0);
-            height: 0;
-            margin-bottom: -0.25rem; /* Adjust for gap */
-            pointer-events: none;
-        }
-        #fab-toggle-icon {
-            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        #floating-bar.collapsed #fab-toggle-icon {
-            transform: rotate(135deg);
-        }
+      #search-container .search-icon {
+        color: var(--text-color);
+        transition: opacity 0.3s ease-in-out;
+        font-weight: bold; /* Ikon dipertebal */
+      }
+      #search-container:hover .search-icon {
+        opacity: 0;
+      }
+      #search-container .search-input {
+        width: 0;
+        padding-left: 0;
+        padding-right: 0;
+        opacity: 0;
+        transition: all 0.4s ease-in-out;
+        font-size: 0.875rem;
+        color: var(--text-color);
+      }
+      #search-container .search-input::placeholder {
+        color: var(--muted-text-color);
+        opacity: 0.8;
+      }
+      #search-container:hover .search-input {
+        width: 150px;
+        padding-left: 1rem;
+        padding-right: 1rem;
+        opacity: 1;
+      }
+      #search-container .search-border {
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        right: 50%;
+        height: 2px;
+        background-color: var(--accent-color);
+        transition: all 0.4s ease-in-out;
+      }
+      #search-container:hover .search-border {
+        left: 0;
+        right: 0;
+      }
 
-        /* Animated Border */
-        @property --angle {
-          syntax: '<angle>';
-          initial-value: 0deg;
-          inherits: false;
-        }
+      .animate-entry {
+        opacity: 0;
+        transform: translateY(-20px);
+        transition: opacity 0.6s cubic-bezier(0.25, 1, 0.5, 1),
+          transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+      }
+      .animate-entry.is-visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
 
-        @keyframes rotate-border {
-          to {
-            --angle: 360deg;
-          }
-        }
+      /* Floating Action Bar */
+      .fab-secondary {
+        transition: all 0.4s ease-out;
+        opacity: 1;
+        transform: scale(1);
+        height: 3.5rem; /* 56px */
+      }
+      #floating-bar.collapsed .fab-secondary {
+        opacity: 0;
+        transform: scale(0);
+        height: 0;
+        margin-bottom: -0.25rem; /* Adjust for gap */
+        pointer-events: none;
+      }
+      #fab-toggle-icon {
+        transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      #floating-bar.collapsed #fab-toggle-icon {
+        transform: rotate(135deg);
+      }
 
-        .animated-border-box {
-            --border-width: 1px;
-            --angle: 0deg;
-            position: relative;
-            border-radius: 9999px; /* rounded-full */
-            padding: var(--border-width);
-            background-image: conic-gradient(from var(--angle), transparent 20%, var(--accent-color), transparent 80%);
-            animation: rotate-border 4s linear infinite;
-        }
+      /* Animated Border */
+      @property --angle {
+        syntax: "<angle>";
+        initial-value: 0deg;
+        inherits: false;
+      }
 
-        .animated-border-box .inner-content {
-            background-color: #27272a; /* zinc-800 */
-            border-radius: 9999px;
+      @keyframes rotate-border {
+        to {
+          --angle: 360deg;
         }
+      }
+
+      .animated-border-box {
+        --border-width: 1px;
+        --angle: 0deg;
+        position: relative;
+        border-radius: 9999px; /* rounded-full */
+        padding: var(--border-width);
+        background-image: conic-gradient(
+          from var(--angle),
+          transparent 20%,
+          var(--accent-color),
+          transparent 80%
+        );
+        animation: rotate-border 4s linear infinite;
+      }
+
+      .animated-border-box .inner-content {
+        background-color: #27272a; /* zinc-800 */
+        border-radius: 9999px;
+      }
     </style>
-</head>
-<body class="antialiased">
-
+  </head>
+  <body class="antialiased">
     <!-- New Loader -->
     <div id="loader">
-        <div class="spinner">
-          <div class="loader l1"></div>
-          <div class="loader l2"></div>
-        </div>
+      <div class="spinner">
+        <div class="loader l1"></div>
+        <div class="loader l2"></div>
+      </div>
     </div>
 
-    <!-- Background Animation Canvas -->
-    <canvas id="bg-canvas"></canvas>
+    <!-- Background Animation -->
+    <div id="background-grid"></div>
 
     <!-- Header -->
-    <header id="header" class="fixed top-0 left-0 right-0 z-50 transition-all duration-500 pt-4">
-        <nav class="container max-w-5xl mx-auto px-6 py-4 flex justify-between items-center">
-            <!-- Logo & Availability -->
-            <div class="flex items-center gap-4">
-                <a href="#" class="text-2xl font-bold text-white flex-shrink-0 animate-entry">
-                    D<span style="color: var(--accent-color);">.</span>
-                </a>
-                <div class="hidden md:flex items-center gap-3 text-sm animate-entry animated-border-box">
-                    <div class="inner-content flex items-center gap-3 px-4 py-2">
-                        <span class="relative flex h-3 w-3">
-                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style="background-color: #22c55e;"></span>
-                            <span class="relative inline-flex rounded-full h-3 w-3" style="background-color: #22c55e;"></span>
-                        </span>
-                        <span class="text-white">Available For:</span> <span class="font-semibold text-white">FREELANCE / FULL-TIME</span>
-                    </div>
-                </div>
+    <header
+      id="header"
+      class="fixed top-0 left-0 right-0 z-50 transition-all duration-500 pt-4"
+    >
+      <nav
+        id="main-nav"
+        class="container max-w-5xl mx-auto px-6 py-4 flex justify-between items-center"
+      >
+        <!-- Logo & Availability -->
+        <div class="flex items-center gap-4">
+          <a
+            href="#"
+            class="text-2xl font-bold text-white flex-shrink-0 animate-entry"
+          >
+            D<span style="color: var(--accent-color)">.</span>
+          </a>
+          <div
+            class="hidden md:flex items-center gap-3 text-sm animate-entry animated-border-box"
+          >
+            <div class="inner-content flex items-center gap-3 px-4 py-2">
+              <span class="relative flex h-3 w-3">
+                <span
+                  class="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75"
+                  style="background-color: #22c55e"
+                ></span>
+                <span
+                  class="relative inline-flex rounded-full h-3 w-3"
+                  style="background-color: #22c55e"
+                ></span>
+              </span>
+              <span class="text-white">Available For:</span>
+              <span class="font-semibold text-white"
+                >FREELANCE / FULL-TIME</span
+              >
             </div>
-            
-            <!-- Center Menu (Search) -->
-            <div class="hidden md:flex flex-grow justify-center animate-entry">
-                <div id="search-container" class="relative flex items-center h-10">
-                    <i class="bi bi-search font-bold absolute left-1/2 -translate-x-1/2 search-icon cursor-pointer"></i>
-                    <input type="text" placeholder="Search..." class="search-input h-full bg-transparent focus:outline-none text-center" />
-                    <div class="search-border"></div>
-                </div>
-            </div>
-
-            <!-- Right Menu (Desktop) & Mobile Button -->
-            <div class="flex items-center">
-                <div class="hidden md:flex items-center gap-6">
-                    <a href="#" target="_blank" class="transition-colors font-medium text-sm animate-entry text-zinc-400 hover:text-amber-400">Threads</a>
-                    <a href="https://www.linkedin.com/in/odipramadika" target="_blank" class="transition-colors font-medium text-sm animate-entry text-zinc-400 hover:text-amber-400">LinkedIn</a>
-                    <a href="#" target="_blank" class="transition-colors font-medium text-sm animate-entry text-zinc-400 hover:text-amber-400">GitHub</a>
-                    <div id="lets-talk-button" class="ml-4 animate-entry animated-border-box">
-                        <a href="mailto:odipramadika99@gmail.com" class="inner-content flex items-center transition-all duration-300 px-4 py-2" style="color: var(--text-color);">
-                            <span class="font-bold text-sm">Let's Talk</span> <i class="bi bi-arrow-right font-bold ml-2" style="color: var(--accent-color);"></i>
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Mobile Menu Button (Hamburger) -->
-                <div class="md:hidden">
-                    <button id="mobile-menu-button" class="text-white focus:outline-none">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
-                    </button>
-                </div>
-            </div>
-        </nav>
-        
-        <!-- Mobile Menu -->
-        <div id="mobile-menu" class="hidden md:hidden bg-zinc-900/95 backdrop-blur-sm">
-            <div class="py-3 border-b border-zinc-700">
-                <div class="flex items-center justify-center gap-3 text-sm">
-                    <span class="relative flex h-3 w-3">
-                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full" style="background-color: #22c55e;"></span>
-                        <span class="relative inline-flex rounded-full h-3 w-3" style="background-color: #22c55e;"></span>
-                    </span>
-                    Available For: <span class="font-semibold text-white">FREELANCE / FULL-TIME</span>
-                </div>
-            </div>
-            <a href="#" target="_blank" class="block text-center py-3 px-4 text-zinc-300 hover:bg-zinc-700/50 transition-colors">Threads</a>
-            <a href="https://www.linkedin.com/in/odipramadika" target="_blank" class="block text-center py-3 px-4 text-zinc-300 hover:bg-zinc-700/50 transition-colors">LinkedIn</a>
-            <a href="#" target="_blank" class="block text-center py-3 px-4 text-zinc-300 hover:bg-zinc-700/50 transition-colors">GitHub</a>
-            <div class="py-4">
-                 <a href="mailto:odipramadika99@gmail.com" class="flex items-center justify-center w-1/2 mx-auto text-slate-900 font-bold py-2 px-4 rounded-lg transition-all duration-300" style="background-color: var(--accent-color);">
-                    Let's Talk <i class="bi bi-arrow-right ml-2"></i>
-                </a>
-            </div>
+          </div>
         </div>
+
+        <!-- Center Menu (Search) -->
+        <div class="hidden md:flex flex-grow justify-center animate-entry">
+          <div id="search-container" class="relative flex items-center h-10">
+            <i
+              class="bi bi-search font-bold absolute left-1/2 -translate-x-1/2 search-icon cursor-pointer"
+            ></i>
+            <input
+              type="text"
+              placeholder="Search..."
+              class="search-input h-full bg-transparent focus:outline-none text-center"
+            />
+            <div class="search-border"></div>
+          </div>
+        </div>
+
+        <!-- Right Menu (Desktop) & Mobile Button -->
+        <div class="flex items-center">
+          <div class="hidden md:flex items-center gap-6">
+            <a
+              href="#"
+              target="_blank"
+              class="transition-colors font-medium text-sm animate-entry text-zinc-400 hover:text-amber-400"
+              >Threads</a
+            >
+            <a
+              href="https://www.linkedin.com/in/odipramadika"
+              target="_blank"
+              class="transition-colors font-medium text-sm animate-entry text-zinc-400 hover:text-amber-400"
+              >LinkedIn</a
+            >
+            <a
+              href="#"
+              target="_blank"
+              class="transition-colors font-medium text-sm animate-entry text-zinc-400 hover:text-amber-400"
+              >GitHub</a
+            >
+            <div
+              id="lets-talk-button"
+              class="ml-4 animate-entry animated-border-box"
+            >
+              <a
+                href="mailto:odipramadika99@gmail.com"
+                class="inner-content flex items-center transition-all duration-300 px-4 py-2"
+                style="color: var(--text-color)"
+              >
+                <span class="font-bold text-sm">Let's Talk</span>
+                <i
+                  class="bi bi-arrow-right font-bold ml-2"
+                  style="color: var(--accent-color)"
+                ></i>
+              </a>
+            </div>
+          </div>
+
+          <!-- Mobile Menu Button (Hamburger) -->
+          <div class="md:hidden">
+            <button
+              id="mobile-menu-button"
+              class="text-white focus:outline-none"
+            >
+              <svg
+                class="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M4 6h16M4 12h16m-7 6h7"
+                ></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </nav>
+
+      <!-- Mobile Menu -->
+      <div
+        id="mobile-menu"
+        class="hidden md:hidden bg-zinc-900/95 backdrop-blur-sm"
+      >
+        <div class="py-3 border-b border-zinc-700">
+          <div class="flex items-center justify-center gap-3 text-sm">
+            <span class="relative flex h-3 w-3">
+              <span
+                class="animate-ping absolute inline-flex h-full w-full rounded-full"
+                style="background-color: #22c55e"
+              ></span>
+              <span
+                class="relative inline-flex rounded-full h-3 w-3"
+                style="background-color: #22c55e"
+              ></span>
+            </span>
+            Available For:
+            <span class="font-semibold text-white">FREELANCE / FULL-TIME</span>
+          </div>
+        </div>
+        <a
+          href="#"
+          target="_blank"
+          class="block text-center py-3 px-4 text-zinc-300 hover:bg-zinc-700/50 transition-colors"
+          >Threads</a
+        >
+        <a
+          href="https://www.linkedin.com/in/odipramadika"
+          target="_blank"
+          class="block text-center py-3 px-4 text-zinc-300 hover:bg-zinc-700/50 transition-colors"
+          >LinkedIn</a
+        >
+        <a
+          href="#"
+          target="_blank"
+          class="block text-center py-3 px-4 text-zinc-300 hover:bg-zinc-700/50 transition-colors"
+          >GitHub</a
+        >
+        <div class="py-4">
+          <a
+            href="mailto:odipramadika99@gmail.com"
+            class="flex items-center justify-center w-1/2 mx-auto text-slate-900 font-bold py-2 px-4 rounded-lg transition-all duration-300"
+            style="background-color: var(--accent-color)"
+          >
+            Let's Talk <i class="bi bi-arrow-right ml-2"></i>
+          </a>
+        </div>
+      </div>
     </header>
 
     <!-- Main Content -->
-    <main class="container max-w-5xl mx-auto px-6 relative z-10 content-blurred">
+    <main
+      class="container max-w-5xl mx-auto px-6 relative z-10 content-blurred"
+    >
+      <!-- Hero Section -->
+      <section
+        id="hero"
+        class="min-h-screen flex flex-col justify-center items-center text-center pt-16"
+      >
+        <div class="max-w-4xl">
+          <h1
+            class="text-5xl md:text-7xl font-extrabold text-white leading-tight mb-4 animate-entry"
+          >
+            <span class="block">Odi Pramadika</span>
+            <span
+              class="block text-4xl md:text-6xl"
+              style="color: var(--muted-text-color)"
+              >Network & DevOps Engineer</span
+            >
+          </h1>
+          <p
+            class="text-lg md:text-xl max-w-2xl mx-auto mb-8 animate-entry"
+            style="color: var(--muted-text-color)"
+          >
+            A Computer Science graduate with a strong understanding of Cloud
+            infrastructure, DevOps automation, and Networking.
+          </p>
+          <div
+            class="flex flex-col sm:flex-row gap-4 justify-center animate-entry"
+          >
+            <a
+              href="#projects"
+              class="text-slate-900 font-bold py-3 px-8 rounded-lg transition-all duration-300 shadow-lg text-center hover:brightness-90"
+              style="background-color: var(--accent-color)"
+            >
+              View My Projects
+            </a>
+            <a
+              href="CV - Network Engineering - Odi Pramadika.pdf"
+              download
+              class="bg-zinc-700 hover:bg-zinc-600 text-white font-bold py-3 px-8 rounded-lg transition-all duration-300 text-center"
+            >
+              Download CV
+            </a>
+          </div>
+        </div>
+      </section>
 
-        <!-- Hero Section -->
-        <section id="hero" class="min-h-screen flex flex-col justify-center items-center text-center pt-24">
-            <div class="max-w-4xl">
-                <h1 class="text-5xl md:text-7xl font-extrabold text-white leading-tight mb-4 animate-entry">
-                    <span class="block">Odi Pramadika</span>
-                    <span class="block text-4xl md:text-6xl" style="color: var(--muted-text-color);">Network & DevOps Engineer</span>
-                </h1>
-                <p class="text-lg md:text-xl max-w-2xl mx-auto mb-8 animate-entry" style="color: var(--muted-text-color);">
-                    A Computer Science graduate with a strong understanding of Cloud infrastructure, DevOps automation, and Networking.
+      <!-- About Section -->
+      <section id="about" class="py-16 fade-in-up">
+        <div class="glass-card p-8 rounded-xl">
+          <h2 class="text-3xl font-bold text-white mb-6 text-center">
+            About Me
+          </h2>
+          <p
+            class="leading-relaxed text-center"
+            style="color: var(--muted-text-color)"
+          >
+            A Computer Science graduate from the Informatics Engineering program
+            with a strong understanding of Cloud infrastructure and DevOps
+            automation. Experienced in provisioning infrastructure as code (IaC)
+            using Terraform and building CI/CD pipelines with Jenkins.
+            Proficient in fundamental networking concepts (TCP/IP, Subnetting)
+            and have hands-on experience managing Google Kubernetes Engine (GKE)
+            on Google Cloud Platform (GCP). Seeking opportunities to apply
+            technical skills in IT Support, Cloud, and DevOps to support and
+            optimize a company's technology infrastructure.
+          </p>
+        </div>
+      </section>
+
+      <!-- Skills Section -->
+      <section id="skills" class="py-16 fade-in-up">
+        <h2 class="text-3xl font-bold text-white mb-8 text-center">
+          Technical Skills
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div class="glass-card p-6 rounded-xl text-center">
+            <h3
+              class="text-xl font-bold mb-4"
+              style="color: var(--accent-color)"
+            >
+              Cloud & DevOps
+            </h3>
+            <div class="flex flex-wrap gap-2 justify-center">
+              <span
+                class="bg-zinc-700 text-zinc-200 px-3 py-1 rounded-full text-sm"
+                >Terraform</span
+              >
+              <span
+                class="bg-zinc-700 text-zinc-200 px-3 py-1 rounded-full text-sm"
+                >Jenkins</span
+              >
+              <span
+                class="bg-zinc-700 text-zinc-200 px-3 py-1 rounded-full text-sm"
+                >CI/CD</span
+              >
+              <span
+                class="bg-zinc-700 text-zinc-200 px-3 py-1 rounded-full text-sm"
+                >GCP</span
+              >
+              <span
+                class="bg-zinc-700 text-zinc-200 px-3 py-1 rounded-full text-sm"
+                >GKE</span
+              >
+              <span
+                class="bg-zinc-700 text-zinc-200 px-3 py-1 rounded-full text-sm"
+                >Git & GitHub</span
+              >
+            </div>
+          </div>
+          <div class="glass-card p-6 rounded-xl text-center">
+            <h3
+              class="text-xl font-bold mb-4"
+              style="color: var(--accent-color)"
+            >
+              Networking & Security
+            </h3>
+            <div class="flex flex-wrap gap-2 justify-center">
+              <span
+                class="bg-zinc-700 text-zinc-200 px-3 py-1 rounded-full text-sm"
+                >TCP/IP</span
+              >
+              <span
+                class="bg-zinc-700 text-zinc-200 px-3 py-1 rounded-full text-sm"
+                >Subnetting</span
+              >
+              <span
+                class="bg-zinc-700 text-zinc-200 px-3 py-1 rounded-full text-sm"
+                >Routing</span
+              >
+              <span
+                class="bg-zinc-700 text-zinc-200 px-3 py-1 rounded-full text-sm"
+                >Firewall</span
+              >
+              <span
+                class="bg-zinc-700 text-zinc-200 px-3 py-1 rounded-full text-sm"
+                >VLAN</span
+              >
+              <span
+                class="bg-zinc-700 text-zinc-200 px-3 py-1 rounded-full text-sm"
+                >VPN</span
+              >
+              <span
+                class="bg-zinc-700 text-zinc-200 px-3 py-1 rounded-full text-sm"
+                >Mikrotik & Cisco</span
+              >
+            </div>
+          </div>
+          <div class="glass-card p-6 rounded-xl text-center">
+            <h3
+              class="text-xl font-bold mb-4"
+              style="color: var(--accent-color)"
+            >
+              Operating Systems & Support
+            </h3>
+            <div class="flex flex-wrap gap-2 justify-center">
+              <span
+                class="bg-zinc-700 text-zinc-200 px-3 py-1 rounded-full text-sm"
+                >Windows 10/11</span
+              >
+              <span
+                class="bg-zinc-700 text-zinc-200 px-3 py-1 rounded-full text-sm"
+                >Linux (Ubuntu, CentOS)</span
+              >
+              <span
+                class="bg-zinc-700 text-zinc-200 px-3 py-1 rounded-full text-sm"
+                >Troubleshooting</span
+              >
+              <span
+                class="bg-zinc-700 text-zinc-200 px-3 py-1 rounded-full text-sm"
+                >Remote Desktop</span
+              >
+            </div>
+          </div>
+          <div class="glass-card p-6 rounded-xl text-center">
+            <h3
+              class="text-xl font-bold mb-4"
+              style="color: var(--accent-color)"
+            >
+              Tools & Scripting Languages
+            </h3>
+            <div class="flex flex-wrap gap-2 justify-center">
+              <span
+                class="bg-zinc-700 text-zinc-200 px-3 py-1 rounded-full text-sm"
+                >Apache Groovy (Basic)</span
+              >
+              <span
+                class="bg-zinc-700 text-zinc-200 px-3 py-1 rounded-full text-sm"
+                >Wireshark</span
+              >
+              <span
+                class="bg-zinc-700 text-zinc-200 px-3 py-1 rounded-full text-sm"
+                >Cisco Packet Tracer</span
+              >
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Experience Section -->
+      <section id="experience" class="py-16 fade-in-up">
+        <h2 class="text-3xl font-bold text-white mb-8 text-center">
+          Relevant Experience
+        </h2>
+        <div class="space-y-8">
+          <div class="glass-card rounded-xl overflow-hidden md:flex">
+            <div class="p-8 md:w-2/3 text-center md:text-left">
+              <h3 class="text-xl font-bold text-white">
+                Network Engineer Intern
+              </h3>
+              <p class="mb-1" style="color: var(--accent-color)">
+                PT Airmas Golden Solusindo, Surabaya
+              </p>
+              <p class="text-sm mb-3" style="color: var(--muted-text-color)">
+                May 2018 - July 2018
+              </p>
+              <div
+                class="space-y-1 text-left"
+                style="color: var(--muted-text-color)"
+              >
+                <p>
+                  Assisted in the installation, configuration, and maintenance
+                  of network devices.
                 </p>
-                <div class="flex flex-col sm:flex-row gap-4 justify-center animate-entry">
-                    <a href="#projects" class="text-slate-900 font-bold py-3 px-8 rounded-lg transition-all duration-300 shadow-lg text-center hover:brightness-90" style="background-color: var(--accent-color);">
-                        View My Projects
-                    </a>
-                    <a href="CV - Network Engineering - Odi Pramadika.pdf" download class="bg-zinc-700 hover:bg-zinc-600 text-white font-bold py-3 px-8 rounded-lg transition-all duration-300 text-center">
-                        Download CV
-                    </a>
-                </div>
-            </div>
-        </section>
-
-        <!-- About Section -->
-        <section id="about" class="py-16 fade-in-up">
-            <div class="glass-card p-8 rounded-xl">
-                <h2 class="text-3xl font-bold text-white mb-6 text-center">About Me</h2>
-                <p class="leading-relaxed text-justify" style="color: var(--muted-text-color);">
-                    A Computer Science graduate from the Informatics Engineering program with a strong understanding of Cloud infrastructure and DevOps automation. Experienced in provisioning infrastructure as code (IaC) using Terraform and building CI/CD pipelines with Jenkins. Proficient in fundamental networking concepts (TCP/IP, Subnetting) and have hands-on experience managing Google Kubernetes Engine (GKE) on Google Cloud Platform (GCP). Seeking opportunities to apply technical skills in IT Support, Cloud, and DevOps to support and optimize a company's technology infrastructure.
+                <p>
+                  Involved in monitoring network performance and availability.
                 </p>
+                <p>
+                  Supported senior team in troubleshooting connectivity issues.
+                </p>
+              </div>
             </div>
-        </section>
+            <div
+              class="p-8 bg-zinc-800/50 md:w-1/3 flex flex-col justify-center items-center text-center"
+            >
+              <h4 class="text-4xl font-bold text-white">2018</h4>
+            </div>
+          </div>
+          <div class="glass-card rounded-xl overflow-hidden md:flex">
+            <div class="p-8 md:w-2/3 text-center md:text-left">
+              <h3 class="text-xl font-bold text-white">
+                Network Engineer Intern
+              </h3>
+              <p class="mb-1" style="color: var(--accent-color)">
+                PT Grahamedia Informasi, Salatiga
+              </p>
+              <p class="text-sm mb-3" style="color: var(--muted-text-color)">
+                January 2019 - March 2019
+              </p>
+              <div
+                class="space-y-1 text-left"
+                style="color: var(--muted-text-color)"
+              >
+                <p>Assisted in IP address management and allocation.</p>
+                <p>
+                  Performed basic network security configurations (firewall,
+                  ACLs).
+                </p>
+                <p>
+                  Provided initial technical support for network-related issues.
+                </p>
+              </div>
+            </div>
+            <div
+              class="p-8 bg-zinc-800/50 md:w-1/3 flex flex-col justify-center items-center text-center"
+            >
+              <h4 class="text-4xl font-bold text-white">2019</h4>
+            </div>
+          </div>
+        </div>
+      </section>
 
-        <!-- Skills Section -->
-        <section id="skills" class="py-16 fade-in-up">
-            <h2 class="text-3xl font-bold text-white mb-8 text-center">Technical Skills</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div class="glass-card p-6 rounded-xl text-center">
-                    <h3 class="text-xl font-bold mb-4" style="color: var(--accent-color);">Cloud & DevOps</h3>
-                    <div class="flex flex-wrap gap-2 justify-center">
-                        <span class="bg-zinc-700 text-zinc-200 px-3 py-1 rounded-full text-sm">Terraform</span>
-                        <span class="bg-zinc-700 text-zinc-200 px-3 py-1 rounded-full text-sm">Jenkins</span>
-                        <span class="bg-zinc-700 text-zinc-200 px-3 py-1 rounded-full text-sm">CI/CD</span>
-                        <span class="bg-zinc-700 text-zinc-200 px-3 py-1 rounded-full text-sm">GCP</span>
-                        <span class="bg-zinc-700 text-zinc-200 px-3 py-1 rounded-full text-sm">GKE</span>
-                        <span class="bg-zinc-700 text-zinc-200 px-3 py-1 rounded-full text-sm">Git & GitHub</span>
-                    </div>
-                </div>
-                <div class="glass-card p-6 rounded-xl text-center">
-                    <h3 class="text-xl font-bold mb-4" style="color: var(--accent-color);">Networking & Security</h3>
-                    <div class="flex flex-wrap gap-2 justify-center">
-                        <span class="bg-zinc-700 text-zinc-200 px-3 py-1 rounded-full text-sm">TCP/IP</span>
-                        <span class="bg-zinc-700 text-zinc-200 px-3 py-1 rounded-full text-sm">Subnetting</span>
-                        <span class="bg-zinc-700 text-zinc-200 px-3 py-1 rounded-full text-sm">Routing</span>
-                        <span class="bg-zinc-700 text-zinc-200 px-3 py-1 rounded-full text-sm">Firewall</span>
-                        <span class="bg-zinc-700 text-zinc-200 px-3 py-1 rounded-full text-sm">VLAN</span>
-                        <span class="bg-zinc-700 text-zinc-200 px-3 py-1 rounded-full text-sm">VPN</span>
-                        <span class="bg-zinc-700 text-zinc-200 px-3 py-1 rounded-full text-sm">Mikrotik & Cisco</span>
-                    </div>
-                </div>
-                <div class="glass-card p-6 rounded-xl text-center">
-                    <h3 class="text-xl font-bold mb-4" style="color: var(--accent-color);">Operating Systems & Support</h3>
-                    <div class="flex flex-wrap gap-2 justify-center">
-                        <span class="bg-zinc-700 text-zinc-200 px-3 py-1 rounded-full text-sm">Windows 10/11</span>
-                        <span class="bg-zinc-700 text-zinc-200 px-3 py-1 rounded-full text-sm">Linux (Ubuntu, CentOS)</span>
-                        <span class="bg-zinc-700 text-zinc-200 px-3 py-1 rounded-full text-sm">Troubleshooting</span>
-                        <span class="bg-zinc-700 text-zinc-200 px-3 py-1 rounded-full text-sm">Remote Desktop</span>
-                    </div>
-                </div>
-                <div class="glass-card p-6 rounded-xl text-center">
-                    <h3 class="text-xl font-bold mb-4" style="color: var(--accent-color);">Tools & Scripting Languages</h3>
-                    <div class="flex flex-wrap gap-2 justify-center">
-                        <span class="bg-zinc-700 text-zinc-200 px-3 py-1 rounded-full text-sm">Apache Groovy (Basic)</span>
-                        <span class="bg-zinc-700 text-zinc-200 px-3 py-1 rounded-full text-sm">Wireshark</span>
-                        <span class="bg-zinc-700 text-zinc-200 px-3 py-1 rounded-full text-sm">Cisco Packet Tracer</span>
-                    </div>
-                </div>
+      <!-- Projects Section -->
+      <section id="projects" class="py-16 fade-in-up">
+        <h2 class="text-3xl font-bold text-white mb-8 text-center">
+          Featured Project
+        </h2>
+        <div class="glass-card rounded-xl overflow-hidden md:flex">
+          <div class="p-8 md:w-2/3 text-center md:text-left">
+            <p
+              class="font-semibold text-sm mb-1"
+              style="color: var(--accent-color)"
+            >
+              FINAL PROJECT - OCTOBER 2022
+            </p>
+            <h3 class="text-2xl font-bold text-white mb-4">
+              Provisioning Google Kubernetes Engine (GKE) Cluster Using
+              Terraform
+            </h3>
+            <p class="mb-6" style="color: var(--muted-text-color)">
+              Designed and built a CI/CD automation pipeline using Jenkins to
+              provision GKE clusters in GCP. This project successfully reduced
+              deployment time from hours to under 16 minutes, utilizing an
+              Infrastructure as Code (IaC) approach.
+            </p>
+            <div class="flex flex-wrap gap-3 justify-center md:justify-start">
+              <span
+                class="bg-zinc-700 text-zinc-200 px-3 py-1 rounded-full text-sm font-semibold"
+                >Terraform</span
+              >
+              <span
+                class="bg-zinc-700 text-zinc-200 px-3 py-1 rounded-full text-sm font-semibold"
+                >Jenkins</span
+              >
+              <span
+                class="bg-zinc-700 text-zinc-200 px-3 py-1 rounded-full text-sm font-semibold"
+                >GKE</span
+              >
+              <span
+                class="bg-zinc-700 text-zinc-200 px-3 py-1 rounded-full text-sm font-semibold"
+                >GCP</span
+              >
+              <span
+                class="bg-zinc-700 text-zinc-200 px-3 py-1 rounded-full text-sm font-semibold"
+                >CI/CD</span
+              >
             </div>
-        </section>
+          </div>
+          <div
+            class="p-8 bg-zinc-800/50 md:w-1/3 flex flex-col justify-center items-center text-center"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="64"
+              height="64"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="mb-4"
+              style="color: var(--accent-color)"
+            >
+              <path
+                d="M20.42 4.58a5.4 5.4 0 0 0-7.65 0l-.76.77-.76-.77a5.4 5.4 0 0 0-7.65 0C1.46 6.7 1.33 10.28 4 13l8 8 8-8c2.67-2.72 2.54-6.3.42-8.42z"
+              ></path>
+              <path d="M12 5.5V13"></path>
+              <path d="M12 13l-2.5 2.5"></path>
+              <path d="M12 13l2.5 2.5"></path>
+            </svg>
+            <h4 class="text-xl font-bold text-white">Automated Deployment</h4>
+            <p class="text-sm" style="color: var(--muted-text-color)">
+              From Hours to Minutes
+            </p>
+          </div>
+        </div>
+      </section>
 
-        <!-- Experience Section -->
-        <section id="experience" class="py-16 fade-in-up">
-            <h2 class="text-3xl font-bold text-white mb-8 text-center">Relevant Experience</h2>
-            <div class="space-y-8">
-                <div class="glass-card rounded-xl overflow-hidden md:flex">
-                    <div class="p-8 md:w-2/3 text-center md:text-left">
-                        <h3 class="text-xl font-bold text-white">Network Engineer Intern</h3>
-                        <p class="mb-1" style="color: var(--accent-color);">PT Airmas Golden Solusindo, Surabaya</p>
-                        <p class="text-sm mb-3" style="color: var(--muted-text-color);">May 2018 - July 2018</p>
-                        <div class="space-y-1 text-left" style="color: var(--muted-text-color);">
-                            <p>Assisted in the installation, configuration, and maintenance of network devices.</p>
-                            <p>Involved in monitoring network performance and availability.</p>
-                            <p>Supported senior team in troubleshooting connectivity issues.</p>
-                        </div>
-                    </div>
-                    <div class="p-8 bg-zinc-800/50 md:w-1/3 flex flex-col justify-center items-center text-center">
-                        <h4 class="text-4xl font-bold text-white">2018</h4>
-                    </div>
-                </div>
-                <div class="glass-card rounded-xl overflow-hidden md:flex">
-                    <div class="p-8 md:w-2/3 text-center md:text-left">
-                        <h3 class="text-xl font-bold text-white">Network Engineer Intern</h3>
-                        <p class="mb-1" style="color: var(--accent-color);">PT Grahamedia Informasi, Salatiga</p>
-                        <p class="text-sm mb-3" style="color: var(--muted-text-color);">January 2019 - March 2019</p>
-                        <div class="space-y-1 text-left" style="color: var(--muted-text-color);">
-                            <p>Assisted in IP address management and allocation.</p>
-                            <p>Performed basic network security configurations (firewall, ACLs).</p>
-                            <p>Provided initial technical support for network-related issues.</p>
-                        </div>
-                    </div>
-                    <div class="p-8 bg-zinc-800/50 md:w-1/3 flex flex-col justify-center items-center text-center">
-                        <h4 class="text-4xl font-bold text-white">2019</h4>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Projects Section -->
-        <section id="projects" class="py-16 fade-in-up">
-            <h2 class="text-3xl font-bold text-white mb-8 text-center">Featured Project</h2>
-            <div class="glass-card rounded-xl overflow-hidden md:flex">
-                <div class="p-8 md:w-2/3 text-center md:text-left">
-                    <p class="font-semibold text-sm mb-1" style="color: var(--accent-color);">FINAL PROJECT - OCTOBER 2022</p>
-                    <h3 class="text-2xl font-bold text-white mb-4">Provisioning Google Kubernetes Engine (GKE) Cluster Using Terraform</h3>
-                    <p class="mb-6" style="color: var(--muted-text-color);">
-                        Designed and built a CI/CD automation pipeline using Jenkins to provision GKE clusters in GCP. This project successfully reduced deployment time from hours to under 16 minutes, utilizing an Infrastructure as Code (IaC) approach.
-                    </p>
-                    <div class="flex flex-wrap gap-3 justify-center md:justify-start">
-                        <span class="bg-zinc-700 text-zinc-200 px-3 py-1 rounded-full text-sm font-semibold">Terraform</span>
-                        <span class="bg-zinc-700 text-zinc-200 px-3 py-1 rounded-full text-sm font-semibold">Jenkins</span>
-                        <span class="bg-zinc-700 text-zinc-200 px-3 py-1 rounded-full text-sm font-semibold">GKE</span>
-                        <span class="bg-zinc-700 text-zinc-200 px-3 py-1 rounded-full text-sm font-semibold">GCP</span>
-                        <span class="bg-zinc-700 text-zinc-200 px-3 py-1 rounded-full text-sm font-semibold">CI/CD</span>
-                    </div>
-                </div>
-                <div class="p-8 bg-zinc-800/50 md:w-1/3 flex flex-col justify-center items-center text-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mb-4" style="color: var(--accent-color);"><path d="M20.42 4.58a5.4 5.4 0 0 0-7.65 0l-.76.77-.76-.77a5.4 5.4 0 0 0-7.65 0C1.46 6.7 1.33 10.28 4 13l8 8 8-8c2.67-2.72 2.54-6.3.42-8.42z"></path><path d="M12 5.5V13"></path><path d="M12 13l-2.5 2.5"></path><path d="M12 13l2.5 2.5"></path></svg>
-                    <h4 class="text-xl font-bold text-white">Automated Deployment</h4>
-                    <p class="text-sm" style="color: var(--muted-text-color);">From Hours to Minutes</p>
-                </div>
-            </div>
-        </section>
-        
-        <!-- Education Section -->
-        <section id="education" class="py-16 fade-in-up">
-            <h2 class="text-3xl font-bold text-white mb-8 text-center">Education</h2>
-            <div class="glass-card rounded-xl overflow-hidden md:flex">
-                 <div class="p-8 md:w-2/3 text-center md:text-left">
-                    <h3 class="text-xl font-bold text-white">Universitas Kristen Satya Wacana</h3>
-                    <p class="mb-1" style="color: var(--accent-color);">Bachelor of Computer Science (S.Kom.), Informatics Engineering</p>
-                    <p class="text-sm mb-3" style="color: var(--muted-text-color);">Graduated July 2022</p>
-                    <p style="color: var(--muted-text-color);">GPA: 3.57 / 4.00</p>
-                 </div>
-                 <div class="p-8 bg-zinc-800/50 md:w-1/3 flex flex-col justify-center items-center text-center">
-                    <h4 class="text-4xl font-bold text-white">UKSW</h4>
-                 </div>
-            </div>
-        </section>
-
+      <!-- Education Section -->
+      <section id="education" class="py-16 fade-in-up">
+        <h2 class="text-3xl font-bold text-white mb-8 text-center">
+          Education
+        </h2>
+        <div class="glass-card rounded-xl overflow-hidden md:flex">
+          <div class="p-8 md:w-2/3 text-center md:text-left">
+            <h3 class="text-xl font-bold text-white">
+              Universitas Kristen Satya Wacana
+            </h3>
+            <p class="mb-1" style="color: var(--accent-color)">
+              Bachelor of Computer Science (S.Kom.), Informatics Engineering
+            </p>
+            <p class="text-sm mb-3" style="color: var(--muted-text-color)">
+              Graduated July 2022
+            </p>
+            <p style="color: var(--muted-text-color)">GPA: 3.57 / 4.00</p>
+          </div>
+          <div
+            class="p-8 bg-zinc-800/50 md:w-1/3 flex flex-col justify-center items-center text-center"
+          >
+            <h4 class="text-4xl font-bold text-white">UKSW</h4>
+          </div>
+        </div>
+      </section>
     </main>
-    
+
     <!-- Footer & Contact Section -->
     <footer class="py-16 text-center content-blurred">
-        <div class="container max-w-5xl mx-auto px-6">
-            <!-- "Let's Talk" Title -->
-            <div class="flex justify-center items-center flex-wrap gap-4 mb-8">
-                <h2 class="text-5xl md:text-7xl font-extrabold text-white tracking-tight">
-                    LET'S TALK
-                </h2>
-                <a href="mailto:odipramadika99@gmail.com" class="bg-white text-slate-900 font-bold py-2 px-5 rounded-lg text-lg hover:bg-slate-200 transition-colors flex-shrink-0">
-                    SAY HI
-                </a>
-            </div>
-
-            <!-- Contact & Social Links -->
-            <div class="flex justify-center items-center flex-wrap gap-x-6 md:gap-x-8 gap-y-2 mb-12 font-bold text-xs" style="color: var(--muted-text-color);">
-                <a href="mailto:odipramadika99@gmail.com" class="hover:text-amber-400 transition-colors">EMAIL</a>
-                <span class="hidden md:inline text-zinc-600">/</span>
-                <a href="tel:+6282232275559" class="hover:text-amber-400 transition-colors">WHATSAPP</a>
-                <span class="hidden md:inline text-zinc-600">/</span>
-                <a href="#" target="_blank" class="hover:text-amber-400 transition-colors">THREADS</a>
-                 <span class="hidden md:inline text-zinc-600">/</span>
-                <a href="https://www.linkedin.com/in/odipramadika" target="_blank" class="hover:text-amber-400 transition-colors">LINKEDIN</a>
-                 <span class="hidden md:inline text-zinc-600">/</span>
-                <a href="#" target="_blank" class="hover:text-amber-400 transition-colors">GITHUB</a>
-            </div>
-
-            <!-- Copyright -->
-            <p class="text-sm" style="color: var(--muted-text-color);">
-                &copy; 2025 Odi Pramadika.
-            </p>
+      <div class="container max-w-5xl mx-auto px-6">
+        <!-- "Let's Talk" Title -->
+        <div class="flex justify-center items-center flex-wrap gap-4 mb-8">
+          <h2
+            class="text-5xl md:text-7xl font-extrabold text-white tracking-tight"
+          >
+            LET'S TALK
+          </h2>
+          <a
+            href="mailto:odipramadika99@gmail.com"
+            class="bg-white text-slate-900 font-bold py-2 px-5 rounded-lg text-lg hover:bg-slate-200 transition-colors flex-shrink-0"
+          >
+            SAY HI
+          </a>
         </div>
+
+        <!-- Contact & Social Links -->
+        <div
+          class="flex justify-center items-center flex-wrap gap-x-6 md:gap-x-8 gap-y-2 mb-12 font-bold text-xs"
+          style="color: var(--muted-text-color)"
+        >
+          <a
+            href="mailto:odipramadika99@gmail.com"
+            class="hover:text-amber-400 transition-colors"
+            >EMAIL</a
+          >
+          <span class="hidden md:inline text-zinc-600">/</span>
+          <a
+            href="tel:+6282232275559"
+            class="hover:text-amber-400 transition-colors"
+            >WHATSAPP</a
+          >
+          <span class="hidden md:inline text-zinc-600">/</span>
+          <a
+            href="#"
+            target="_blank"
+            class="hover:text-amber-400 transition-colors"
+            >THREADS</a
+          >
+          <span class="hidden md:inline text-zinc-600">/</span>
+          <a
+            href="https://www.linkedin.com/in/odipramadika"
+            target="_blank"
+            class="hover:text-amber-400 transition-colors"
+            >LINKEDIN</a
+          >
+          <span class="hidden md:inline text-zinc-600">/</span>
+          <a
+            href="#"
+            target="_blank"
+            class="hover:text-amber-400 transition-colors"
+            >GITHUB</a
+          >
+        </div>
+
+        <!-- Copyright -->
+        <p class="text-sm" style="color: var(--muted-text-color)">
+          &copy; 2025 Odi Pramadika.
+        </p>
+      </div>
     </footer>
 
     <!-- Floating Action Bar -->
     <div class="fixed bottom-8 right-8 z-50">
-        <div id="floating-bar" class="flex flex-col items-center gap-1">
-            <a href="#" class="fab-secondary glass-card w-12 h-12 flex items-center justify-center rounded-full" title="Google Gemini">
-                <i class="bi bi-stars text-xl" style="color: var(--muted-text-color);"></i>
-            </a>
-            <a href="#" class="fab-secondary glass-card w-12 h-12 flex items-center justify-center rounded-full" title="ChatGPT">
-                <i class="bi bi-robot text-xl" style="color: var(--muted-text-color);"></i>
-            </a>
-            <a href="#" class="fab-secondary glass-card w-12 h-12 flex items-center justify-center rounded-full" title="Claude AI">
-                <i class="bi bi-c-circle text-xl" style="color: var(--muted-text-color);"></i>
-            </a>
-            <a href="#" class="fab-secondary glass-card w-12 h-12 flex items-center justify-center rounded-full" title="VS Code">
-                <i class="bi bi-code-slash text-xl" style="color: var(--muted-text-color);"></i>
-            </a>
-             <a href="https://wa.me/6282232275559" target="_blank" class="fab-secondary glass-card w-12 h-12 flex items-center justify-center rounded-full" title="WhatsApp">
-                <i class="bi bi-whatsapp text-xl" style="color: var(--muted-text-color);"></i>
-            </a>
-            <button id="fab-toggle" class="glass-card w-12 h-12 flex items-center justify-center rounded-full" title="Toggle Menu">
-                <i id="fab-toggle-icon" class="bi bi-chevron-up text-xl transition-transform duration-300"></i>
-            </button>
-        </div>
+      <div id="floating-bar" class="flex flex-col items-center gap-1">
+        <a
+          href="#"
+          class="fab-secondary glass-card w-12 h-12 flex items-center justify-center rounded-full"
+          title="Google Gemini"
+        >
+          <i
+            class="bi bi-stars text-xl"
+            style="color: var(--muted-text-color)"
+          ></i>
+        </a>
+        <a
+          href="#"
+          class="fab-secondary glass-card w-12 h-12 flex items-center justify-center rounded-full"
+          title="ChatGPT"
+        >
+          <i
+            class="bi bi-robot text-xl"
+            style="color: var(--muted-text-color)"
+          ></i>
+        </a>
+        <a
+          href="#"
+          class="fab-secondary glass-card w-12 h-12 flex items-center justify-center rounded-full"
+          title="Claude AI"
+        >
+          <i
+            class="bi bi-c-circle text-xl"
+            style="color: var(--muted-text-color)"
+          ></i>
+        </a>
+        <a
+          href="#"
+          class="fab-secondary glass-card w-12 h-12 flex items-center justify-center rounded-full"
+          title="VS Code"
+        >
+          <i
+            class="bi bi-code-slash text-xl"
+            style="color: var(--muted-text-color)"
+          ></i>
+        </a>
+        <a
+          href="https://wa.me/6282232275559"
+          target="_blank"
+          class="fab-secondary glass-card w-12 h-12 flex items-center justify-center rounded-full"
+          title="WhatsApp"
+        >
+          <i
+            class="bi bi-whatsapp text-xl"
+            style="color: var(--muted-text-color)"
+          ></i>
+        </a>
+        <button
+          id="fab-toggle"
+          class="glass-card w-12 h-12 flex items-center justify-center rounded-full"
+          title="Toggle Menu"
+        >
+          <i
+            id="fab-toggle-icon"
+            class="bi bi-chevron-up text-xl transition-transform duration-300"
+          ></i>
+        </button>
+      </div>
     </div>
-
 
     <script>
       document.addEventListener("DOMContentLoaded", () => {
@@ -624,23 +1052,23 @@
         faders.forEach((fader) => {
           appearOnScroll.observe(fader);
         });
-        
+
         // --- Floating Action Bar Logic ---
-        const fabContainer = document.getElementById('floating-bar');
-        const fabToggle = document.getElementById('fab-toggle');
-        const fabToggleIcon = document.getElementById('fab-toggle-icon');
+        const fabContainer = document.getElementById("floating-bar");
+        const fabToggle = document.getElementById("fab-toggle");
+        const fabToggleIcon = document.getElementById("fab-toggle-icon");
 
         // Collapse after 3 seconds
         setTimeout(() => {
-            fabContainer.classList.add('collapsed');
-            fabToggleIcon.classList.remove('bi-chevron-up');
-            fabToggleIcon.classList.add('bi-grid-fill'); // Main icon when collapsed
+          fabContainer.classList.add("collapsed");
+          fabToggleIcon.classList.remove("bi-chevron-up");
+          fabToggleIcon.classList.add("bi-grid-fill"); // Main icon when collapsed
         }, 4500);
 
-        fabToggle.addEventListener('click', () => {
-            const isCollapsed = fabContainer.classList.toggle('collapsed');
-            fabToggleIcon.classList.toggle('bi-chevron-up', !isCollapsed);
-            fabToggleIcon.classList.toggle('bi-grid-fill', isCollapsed);
+        fabToggle.addEventListener("click", () => {
+          const isCollapsed = fabContainer.classList.toggle("collapsed");
+          fabToggleIcon.classList.toggle("bi-chevron-up", !isCollapsed);
+          fabToggleIcon.classList.toggle("bi-grid-fill", isCollapsed);
         });
       });
     </script>
